@@ -1,0 +1,14 @@
+# Ignore Maven target directory
+/target/
+
+# Ignore compiled class files
+*.class
+
+# Ignore logs and system files
+*.log
+.DS_Store
+
+# Ignore IDE settings
+.vscode/
+.idea/
+*.iml
