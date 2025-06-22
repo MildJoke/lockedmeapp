@@ -1,59 +1,65 @@
+// FileManager.java
 package com.lockedme;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 
 public class FileManager {
-
-    private static final String BASE_PATH = "main";
+    private static final String VAULT_PATH = "main";
 
     public static void displayFiles() {
-        File folder = new File(BASE_PATH);
-        File[] files = folder.listFiles();
+        File folder = new File(VAULT_PATH);
+        String[] files = folder.list();
 
         if (files == null || files.length == 0) {
-            System.out.println("No files found in directory.");
-            return;
-        }
-
-        Arrays.sort(files); // Sorting in ascending order
-        System.out.println("Files in directory:");
-        for (File file : files) {
-            if (file.isFile()) {
-                System.out.println("→ " + file.getName());
+            System.out.println("📭 Your vault is currently empty.\n");
+        } else {
+            Arrays.sort(files);
+            System.out.println("📂 Files in your vault (alphabetically):");
+            for (String file : files) {
+                System.out.println(" - " + file);
             }
+            System.out.println();
         }
     }
 
     public static void addFile(String fileName) {
-        File file = new File(BASE_PATH + "/" + fileName);
-
         try {
-            if (file.createNewFile()) {
-                System.out.println("✅ File created: " + file.getName());
+            File newFile = new File(VAULT_PATH + File.separator + fileName);
+            boolean created = newFile.createNewFile();
+            if (created) {
+                System.out.println("✅ File '" + fileName + "' added to the vault.");
+                System.out.println("🕒 Timestamp: " + java.time.LocalDateTime.now());
             } else {
-                System.out.println("⚠️ File already exists.");
+                System.out.println("⚠️ File already exists in the vault.");
             }
-        } catch (Exception e) {
-            System.out.println("❌ Error while adding file: " + e.getMessage());
+        } catch (IOException e) {
+            System.out.println("❌ Error creating file: " + e.getMessage());
         }
     }
 
     public static void deleteFile(String fileName) {
-        File file = new File(BASE_PATH + "/" + fileName);
-        if (file.delete()) {
-            System.out.println("✅ File deleted.");
+        File fileToDelete = new File(VAULT_PATH + File.separator + fileName);
+        if (fileToDelete.exists()) {
+            if (fileToDelete.delete()) {
+                System.out.println("🗑️ File '" + fileName + "' was successfully deleted.");
+            } else {
+                System.out.println("❌ Could not delete the file. Please try again.");
+            }
         } else {
-            System.out.println("❌ File not found or couldn't be deleted.");
+            System.out.println("🚫 File Not Found: '" + fileName + "'");
         }
     }
 
     public static void searchFile(String fileName) {
-        File file = new File(BASE_PATH + "/" + fileName);
-        if (file.exists()) {
-            System.out.println("✅ File found: " + file.getAbsolutePath());
+        File folder = new File(VAULT_PATH);
+        String[] files = folder.list();
+
+        if (files != null && Arrays.asList(files).contains(fileName)) {
+            System.out.println("🔎 File found: '" + fileName + "'");
         } else {
-            System.out.println("❌ File not found.");
+            System.out.println("❌ File not found in the vault.");
         }
     }
 }
